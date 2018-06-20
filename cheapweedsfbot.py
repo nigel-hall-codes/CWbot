@@ -96,7 +96,7 @@ class CheapWeedBot:
         b = Bot()
         b.login(username="CheapWeed_sf", password='shutupPb0y')
         post = 'post.jpg'
-        b.upload_photo(post, caption=self.caption)
+        # b.upload_photo(post, caption=self.caption)
         b.logout()
 
 
@@ -108,21 +108,22 @@ def randomMinute():
 
 randMin = random.randint(30,59)
 
-if __name__ == '__main__':
-
-    b = CheapWeedBot()
-    schedule.every().day.at("19:{}".format(str(randMin))).do(b.post_to_ig)
-
-    while True:
-        schedule.run_pending()
-        print("Running")
-        time.sleep(60)
-
-
-
+# if __name__ == '__main__':
+#
+#     b = CheapWeedBot()
+#     schedule.every().day.at("19:{}".format(str(randMin))).do(b.post_to_ig)
+#
+#     while True:
+#         schedule.run_pending()
+#         print("Running")
+#         time.sleep(60)
+#
 
 
 
+
+b = CheapWeedBot()
+b.post_to_ig()
 
 
 
