@@ -97,7 +97,7 @@ class CheapWeedBot:
         b = Bot()
         b.login(username="CheapWeed_sf", password='shutupPb0y')
         post = 'post.jpg'
-        # b.upload_photo(post, caption=self.caption)
+        b.upload_photo(post, caption=self.caption)
         b.logout()
 
 
