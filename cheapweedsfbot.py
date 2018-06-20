@@ -42,6 +42,7 @@ class CheapWeedBot:
                 title = name
             base_dir = "postsToBeUploaded/"
             fmt = url.split(".")[-1]
+            fmt = fmt.lower()
             urllib.request.urlretrieve(url, '{}{}.{}'.format(base_dir, title, fmt))
             if fmt not in ["JPG", "jpg"]:
                 img = Image.open('{}{}.{}'.format(base_dir, title, fmt))
@@ -122,8 +123,8 @@ randMin = random.randint(30,59)
 
 
 
-b = CheapWeedBot()
-b.post_to_ig()
+# b = CheapWeedBot()
+# b.post_to_ig()
 
 
 
