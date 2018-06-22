@@ -8,11 +8,15 @@ import os
 import trim
 import schedule
 import time
+import post
+import trending
 
 
 class CheapWeedBot:
     def __init__(self):
         self.caption = "nothing"
+        self.post_dir = 'postsToBeUploaded/'
+
 
     def dispensary(self):
         dispensary = Dispensary.get(name="Proven SF")
@@ -56,6 +60,29 @@ class CheapWeedBot:
 
         return tuple(paths)
 
+    def post_trending_product(self):
+        top, name = trending.product()
+        product = trending.product_listing()
+        selling_dispensaries = trending.dispensary_holding_product(top)
+        dString = ""
+        for d in selling_dispensaries:
+            dString += d.name + " | "
+        print(dString)
+        fmt = product['image_url'].split(".")[-1]
+        img_path = self.post_dir + str(product['listing_id']) + "." + fmt
+        urllib.request.urlretrieve(product['image_url'], "{}{}.{}".format(self.post_dir, str(product['listing_id']), fmt))
+        pricesString = ""
+        prices = product['prices']
+        for p in prices:
+            if prices[p] == 0:
+                continue
+            else:
+                pricesString += "${}0 per {}.".format(prices[p], p)
+        caption = "Check out this new trending product | {} | {} | Currently selling at {}".format(product['name'], pricesString, dString)
+        p = post.Post(caption, img_path)
+        p.launch()
+
+
 
     def create_post(self):
         deal = self.deal_of_day()
@@ -64,6 +91,8 @@ class CheapWeedBot:
         deal_image = deal['picture_urls']['large']
         avatar_image = deal['dispensary']['avatar_url']
         rating = "%.2f" % (deal['dispensary']['rating'])
+        license_type = deal['dispensary']['license_type']
+        listing_type = deal['dispensary']['listing_type']
         phone = deal['dispensary']['phone_number']
         bg_path, avatar_path = self.download_images([deal_image, avatar_image], dispensary)
         title = deal['title']
@@ -73,7 +102,6 @@ class CheapWeedBot:
         hsize = int((float(img.size[1]) * float(wpercent)))
         img = img.resize((basewidth, hsize), Image.ANTIALIAS)
         img.save(avatar_path)
-        img_w, img_h = img.size
         background = Image.open(bg_path, 'r')
         bg_w, bg_h = background.size
         bgbasewidth = 800
@@ -89,7 +117,8 @@ class CheapWeedBot:
         background.save('post.jpg')
         hashtags = "#medibles #hightimes #sanfrancisco #710society #cannabiscommunity #cheapweed" \
                    "#marijuana #stoner #delivery #dispensary"
-        self.caption = "Today's deal comes from {}.  {}. Phone: {} Rating: {} {}".format(dispensary, title, phone, rating, hashtags)
+        self.caption = "Today's deal comes from {} | {} | Phone: {} | Rating: {} | License type: {} | {} " \
+                       "{}".format(dispensary, title, phone, rating, license_type, listing_type, hashtags)
 
 
     def post_to_ig(self):
@@ -112,8 +141,9 @@ randMin = random.randint(30,59)
 if __name__ == '__main__':
 
     b = CheapWeedBot()
+    # b.post_to_ig()
     schedule.every().day.at("19:{}".format(str(randMin))).do(b.post_to_ig)
-
+    schedule.every().friday.at("20:{}".format(str(randMin))).do(b.post_trending_product())
     while True:
         schedule.run_pending()
         print("Running")
@@ -122,7 +152,7 @@ if __name__ == '__main__':
 
 
 
-
+#
 # b = CheapWeedBot()
 # b.post_to_ig()
 
