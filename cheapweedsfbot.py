@@ -9,7 +9,13 @@ import trim
 import schedule
 import time
 import post
-import trending
+
+import sys
+# sys.path.append("/Users/Hallshit/Documents/MGIGBOT/venv/lib/python3.5/site-packages")
+
+# import trending
+
+
 
 
 class CheapWeedBot:
@@ -59,28 +65,28 @@ class CheapWeedBot:
             trim.trim(path)
 
         return tuple(paths)
-
-    def post_trending_product(self):
-        top, name = trending.product()
-        product = trending.product_listing()
-        selling_dispensaries = trending.dispensary_holding_product(top)
-        dString = ""
-        for d in selling_dispensaries:
-            dString += d.name + " | "
-        print(dString)
-        fmt = product['image_url'].split(".")[-1]
-        img_path = self.post_dir + str(product['listing_id']) + "." + fmt
-        urllib.request.urlretrieve(product['image_url'], "{}{}.{}".format(self.post_dir, str(product['listing_id']), fmt))
-        pricesString = ""
-        prices = product['prices']
-        for p in prices:
-            if prices[p] == 0:
-                continue
-            else:
-                pricesString += "${}0 per {}.".format(prices[p], p)
-        caption = "Check out this new trending product | {} | {} | Currently selling at {}".format(product['name'], pricesString, dString)
-        p = post.Post(caption, img_path)
-        p.launch()
+    #
+    # def post_trending_product(self):
+    #     top, name = trending.product()
+    #     product = trending.product_listing()
+    #     selling_dispensaries = trending.dispensary_holding_product(top)
+    #     dString = ""
+    #     for d in selling_dispensaries:
+    #         dString += d.name + " | "
+    #     print(dString)
+    #     fmt = product['image_url'].split(".")[-1]
+    #     img_path = self.post_dir + str(product['listing_id']) + "." + fmt
+    #     urllib.request.urlretrieve(product['image_url'], "{}{}.{}".format(self.post_dir, str(product['listing_id']), fmt))
+    #     pricesString = ""
+    #     prices = product['prices']
+    #     for p in prices:
+    #         if prices[p] == 0:
+    #             continue
+    #         else:
+    #             pricesString += "${}0 per {}.".format(prices[p], p)
+    #     caption = "Check out this new trending product | {} | {} | Currently selling at {}".format(product['name'], pricesString, dString)
+    #     p = post.Post(caption, img_path)
+    #     p.launch()
 
 
 
@@ -143,7 +149,7 @@ if __name__ == '__main__':
     b = CheapWeedBot()
     # b.post_to_ig()
     schedule.every().day.at("19:{}".format(str(randMin))).do(b.post_to_ig)
-    schedule.every().friday.at("20:{}".format(str(randMin))).do(b.post_trending_product())
+    # schedule.every().friday.at("20:{}".format(str(randMin))).do(b.post_trending_product)
     while True:
         schedule.run_pending()
         print("Running")
